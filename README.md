@@ -17,12 +17,12 @@ git clone https://github.com/yu-ichiro/sos-realtime-map
 yarn install
 ```
 
-### 開発用ホットリロード付きサーバーの立ち上げ
+## 開発用ホットリロード付きサーバーの立ち上げ
 ```
 yarn serve
 ```
 
-### 書式修正
+## 書式修正
 ```
 yarn lint
 ```
