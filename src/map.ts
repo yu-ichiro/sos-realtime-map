@@ -1,7 +1,7 @@
 import { LatLng } from "leaflet";
 
 export const mapImage = {
-  url: "/img/map.jpg",
+  url: require("./assets/img/map.jpg"),
   width: 960,
   height: 540
 };
