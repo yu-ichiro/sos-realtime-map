@@ -4,8 +4,8 @@ import { ja, en } from "vuetify/src/locale";
 Vue.use(Vuetify);
 
 export default new Vuetify({
-    lang: {
-        locales: { ja, en },
-        current: 'ja'
-    }
+  lang: {
+    locales: { ja, en },
+    current: "ja"
+  }
 });
