@@ -2,27 +2,40 @@
   <l-map
     ref="map"
     id="map"
-    style="height: 100%"
+    style="height: 100%; z-index: 1;"
     :crs="crs"
     :min-zoom="-1"
     :max-zoom="6"
     :bounds="bounds"
   >
     <l-image-overlay :url="url" :bounds="bounds"></l-image-overlay>
-    <misc-store />
+    <character-marker
+      :character="character"
+      v-for="character in characters"
+      :key="character.name"
+    ></character-marker>
   </l-map>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { CRS, LatLng, LatLngBounds } from "leaflet";
-import { Place, all } from "@/assets/places";
+import { CRS, LatLngBounds } from "leaflet";
 import { LMap, LImageOverlay, LMarker } from "vue2-leaflet";
-import { mapImage, point2LatLng } from "@/map";
+import { mapImage } from "@/map";
 import MiscStore from "@/components/MiscStore.vue";
+import SosStore from "@/components/SosStore.vue";
+import CharacterMarker from "@/components/CharacterMarker.vue";
+import { Characters } from "@/assets/characters";
 
 @Component({
-  components: { MiscStore, LMap, LImageOverlay, LMarker }
+  components: {
+    CharacterMarker,
+    SosStore,
+    MiscStore,
+    LMap,
+    LImageOverlay,
+    LMarker
+  }
 })
 export default class SosMap extends Vue {
   crs: CRS = CRS.Simple;
@@ -31,11 +44,8 @@ export default class SosMap extends Vue {
     [0, mapImage.width]
   );
 
-  get places(): { name: string; latlng: LatLng }[] {
-    return all.map((place: Place) => ({
-      name: place.name,
-      latlng: point2LatLng(place.x, place.y)
-    }));
+  get characters() {
+    return Object.values(Characters);
   }
 
   get url(): string {

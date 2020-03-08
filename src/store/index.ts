@@ -1,11 +1,11 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { SosDateInterface } from "@/store/sos_date";
+import { SosStateInterface } from "@/store/sos_state";
 
 Vue.use(Vuex);
 
 export interface RootState {
-  sosDate: SosDateInterface;
+  sosState: SosStateInterface;
 }
 
 export default new Vuex.Store<RootState>({});

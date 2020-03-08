@@ -4,7 +4,6 @@
       牧場物語リアルタイムマップ
       <v-spacer></v-spacer>
       <sos-state></sos-state>
-      <v-btn @click="next"></v-btn>
     </v-app-bar>
 
     <v-content>
@@ -19,14 +18,9 @@ import { Component } from "vue-property-decorator";
 import { LMap, LImageOverlay, LMarker } from "vue2-leaflet";
 import SosMap from "@/components/SosMap.vue";
 import SosState from "@/components/SosState.vue";
-import { sosDateModule } from "@/store/sos_date";
 
 @Component({
   components: { LMap, LImageOverlay, LMarker, SosMap, SosState }
 })
-export default class App extends Vue {
-  next() {
-    sosDateModule.increment();
-  }
-}
+export default class App extends Vue {}
 </script>

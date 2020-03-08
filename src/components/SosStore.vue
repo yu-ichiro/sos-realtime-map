@@ -8,7 +8,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { LMarker } from "vue2-leaflet";
 import { LatLng } from "leaflet";
-import { sosDateModule, SosDateReadableValue } from "@/store/sos_date";
+import { sosStateModule, SosDateReadableValue } from "@/store/sos_state";
 import { point2LatLng } from "@/map";
 
 @Component({ components: { LMarker } })
@@ -27,7 +27,7 @@ export default class SosStore extends Vue {
   }
 
   get sosDateReadableValue(): SosDateReadableValue {
-    return sosDateModule.date.readableValue;
+    return sosStateModule.date.readableValue;
   }
 }
 </script>

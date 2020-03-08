@@ -6,14 +6,14 @@ import {
 } from "vuex-module-decorators";
 import store from "@/store";
 
-enum Seasons {
+export enum Seasons {
   Spring,
   Summer,
   Autumn,
   Winter
 }
 
-enum Weekdays {
+export enum Weekdays {
   Sun,
   Mon,
   Tue,
@@ -120,14 +120,16 @@ function _unwrapMutableSosDate(_sosDate: SosDate): MutableSosDate {
   return _sosDate as MutableSosDate;
 }
 
-export interface SosDateInterface {
+export interface SosStateInterface {
   date: SosDate;
+  sunny: boolean;
   auto: boolean;
 }
 
 @Module({ dynamic: true, store, name: "sosDate", namespaced: true })
-class SosDateModule extends VuexModule implements SosDateInterface {
+class SosStateModule extends VuexModule implements SosStateInterface {
   date: SosDate = new MutableSosDate();
+  sunny = true;
   auto = false;
 
   @Mutation
@@ -143,6 +145,19 @@ class SosDateModule extends VuexModule implements SosDateInterface {
       minute: this.date.readableValue.minute - 10
     });
   }
+
+  @Mutation
+  replaceDateState(val: Partial<SosDateReadableValue>) {
+    _unwrapMutableSosDate(this.date).replace(val);
+  }
+
+  @Mutation
+  setSunnyState(val: boolean) {
+    this.sunny = val;
+  }
 }
 
-export const sosDateModule = getModule(SosDateModule);
+export const sosStateModule = getModule(SosStateModule);
+
+export type stateCondition = (val: SosStateInterface) => boolean;
+export type stateDependent<T> = (val: SosStateInterface) => T;

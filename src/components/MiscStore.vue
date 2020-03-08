@@ -1,6 +1,6 @@
 <template>
   <sos-store :x="place.x" :y="place.y" :lock-condition="place.lockCondition">{{
-    place.name
+    place.memo
   }}</sos-store>
 </template>
 

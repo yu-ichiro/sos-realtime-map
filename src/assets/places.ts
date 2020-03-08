@@ -1,54 +1,114 @@
-import { SosDateReadableValue } from "@/store/sos_date";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { stateCondition } from "@/store/sos_state";
 
 export interface Place {
-  name: string;
-  lockCondition: (val: SosDateReadableValue) => boolean;
+  memo: string;
+  accessible: stateCondition;
   x: number;
   y: number;
 }
 
-const MyRanch: Place = {
-  name: "牧場",
-  lockCondition: () => false,
+export const Nowhere: Place = {
+  memo: "不明",
+  accessible: () => false,
+  x: -10000,
+  y: -10000
+};
+
+export const MyRanch: Place = {
+  memo: "牧場",
+  accessible: () => true,
   x: 385,
   y: 405
 };
 
-const ChickenRanch: Place = {
-  name: "にわとりりあ",
-  lockCondition: () => false,
+export const ChickenRanch: Place = {
+  memo: "にわとりりあ",
+  accessible: () => true,
   x: 548,
   y: 342
 };
 
-const Smith: Place = {
-  name: "鍛冶屋サイバラ",
-  lockCondition: () => false,
+export const ChickenRanchPrivate: Place = {
+  memo: "にわとりりあ(2階)",
+  accessible: () => true,
+  x: 548,
+  y: 340
+};
+
+export const Smith: Place = {
+  memo: "鍛冶屋サイバラ",
+  accessible: () => true,
   x: 425,
   y: 275
 };
 
-const MiscStore: Place = {
-  name: "ザっか屋(店舗)",
-  lockCondition: (val) => {
-    if (["Sun", "Tue"].includes(val.weekday)) return true;
-    if (val.hour < 10 || 19 <= val.hour) return true;
-    return false
-  },
+export const MiscStore: Place = {
+  memo: "ザっか屋",
+  accessible: () => true,
   x: 581,
   y: 93
 };
 
-const MiscStorePrivate: Place = {
-  name: "ザっか屋(奥)",
-  lockCondition: (val) => {
-    if (!MiscStore.lockCondition(val)) return false;
-    return true
-  },
-  x: 561,
-  y: 53
+export const MiscStorePrivate: Place = {
+  memo: "ザっか屋(奥)",
+  accessible: () => true,
+  x: 581,
+  y: 93
 };
 
-export { MyRanch, ChickenRanch, MiscStore, Smith, MiscStorePrivate };
+export const Hotel: Place = {
+  memo: "ダッドの店",
+  accessible: () => true,
+  x: 560,
+  y: 174
+};
 
-export const all = [MyRanch, ChickenRanch, MiscStore, Smith, MiscStorePrivate];
+export const HotelPrivate: Place = {
+  memo: "ダッドの店(奥)",
+  accessible: () => true,
+  x: 560,
+  y: 147
+};
+
+export const HotelSecond: Place = {
+  memo: "ダッドの店(２階)",
+  accessible: () => true,
+  x: 560,
+  y: 160
+};
+
+export const Fountain: Place = {
+  memo: "泉周辺",
+  accessible: () => true,
+  x: 242,
+  y: 360
+};
+
+export const Square: Place = {
+  memo: "広場",
+  accessible: () => true,
+  x: 784,
+  y: 252
+};
+
+export const HouseBasil: Place = {
+  memo: "バジルの家",
+  accessible: () => true,
+  x: 377,
+  y: 82
+};
+
+export const YodelRanch: Place = {
+  memo: "ヨーデル牧場",
+  accessible: () => true,
+  x: 685,
+  y: 350
+};
+
+export const YodelRanchYard: Place = {
+  memo: "ヨーデル牧場(庭)",
+  accessible: () => true,
+  x: 638,
+  y: 338
+};
