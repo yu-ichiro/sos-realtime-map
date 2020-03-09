@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { CRS, LatLngBounds } from "leaflet";
-import { LMap, LImageOverlay, LMarker } from "vue2-leaflet";
+import { LMap, LImageOverlay } from "vue2-leaflet";
 import { mapImage } from "@/map";
 import MiscStore from "@/components/MiscStore.vue";
 import SosStore from "@/components/SosStore.vue";
@@ -33,8 +33,7 @@ import { Characters } from "@/assets/characters";
     SosStore,
     MiscStore,
     LMap,
-    LImageOverlay,
-    LMarker
+    LImageOverlay
   }
 })
 export default class SosMap extends Vue {

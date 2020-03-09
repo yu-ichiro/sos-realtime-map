@@ -15,12 +15,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { LMap, LImageOverlay, LMarker } from "vue2-leaflet";
 import SosMap from "@/components/SosMap.vue";
 import SosState from "@/components/SosState.vue";
 
 @Component({
-  components: { LMap, LImageOverlay, LMarker, SosMap, SosState }
+  components: { SosMap, SosState }
 })
 export default class App extends Vue {}
 </script>
