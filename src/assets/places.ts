@@ -112,3 +112,22 @@ export const YodelRanchYard: Place = {
   x: 638,
   y: 338
 };
+
+export const Places: Record<string, Place> = {
+  Nowhere: Nowhere,
+  MyRanch: MyRanch,
+  ChickenRanch: ChickenRanch,
+  ChickenRanchPrivate: ChickenRanchPrivate,
+  Smith: Smith,
+  MiscStore: MiscStore,
+  MiscStorePrivate: MiscStorePrivate,
+  Hotel: Hotel,
+  HotelPrivate: HotelPrivate,
+  HotelSecond: HotelSecond,
+  Fountain: Fountain,
+  Square: Square,
+  HouseBasil: HouseBasil,
+  YodelRanch: YodelRanch,
+  YodelRanchYard: YodelRanchYard
+}
+

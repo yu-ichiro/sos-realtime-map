@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { stateDependent } from "@/store/sos_state";
 import {
-  Fountain,
-  Hotel,
-  HotelPrivate,
-  HotelSecond,
-  HouseBasil,
   Place,
-  Square,
-  YodelRanch
+  Places
 } from "@/assets/places";
 
 export interface Character {
@@ -23,20 +17,20 @@ export const Characters: Record<string, Character> = {
     url: require("@/assets/img/characters/ann.jpg"),
     place: state => {
       if (state.sunny) {
-        if (state.date.readableValue.hour < 7) return Hotel;
-        else if (state.date.readableValue.hour < 10) return Fountain;
-        else if (state.date.readableValue.hour < 13) return HotelSecond;
-        else if (state.date.readableValue.hour < 16) return Hotel;
-        else if (state.date.readableValue.hour < 19) return HotelSecond;
-        else if (state.date.readableValue.hour < 22) return Hotel;
-        else return HotelPrivate;
+        if (state.date.readableValue.hour < 7) return Places.Hotel;
+        else if (state.date.readableValue.hour < 10) return Places.Fountain;
+        else if (state.date.readableValue.hour < 13) return Places.HotelSecond;
+        else if (state.date.readableValue.hour < 16) return Places.Hotel;
+        else if (state.date.readableValue.hour < 19) return Places.HotelSecond;
+        else if (state.date.readableValue.hour < 22) return Places.Hotel;
+        else return Places.HotelPrivate;
       } else {
-        if (state.date.readableValue.hour < 10) return HotelPrivate;
-        else if (state.date.readableValue.hour < 13) return HotelSecond;
-        else if (state.date.readableValue.hour < 16) return Hotel;
-        else if (state.date.readableValue.hour < 19) return HotelSecond;
-        else if (state.date.readableValue.hour < 22) return Hotel;
-        else return HotelPrivate;
+        if (state.date.readableValue.hour < 10) return Places.HotelPrivate;
+        else if (state.date.readableValue.hour < 13) return Places.HotelSecond;
+        else if (state.date.readableValue.hour < 16) return Places.Hotel;
+        else if (state.date.readableValue.hour < 19) return Places.HotelSecond;
+        else if (state.date.readableValue.hour < 22) return Places.Hotel;
+        else return Places.HotelPrivate;
       }
     }
   },
@@ -45,11 +39,11 @@ export const Characters: Record<string, Character> = {
     url: require("@/assets/img/characters/anna.jpg"),
     place: state => {
       if (state.sunny) {
-        if (state.date.readableValue.hour < 14) return HouseBasil;
-        else if (state.date.readableValue.hour < 16) return Square;
-        else return HouseBasil;
+        if (state.date.readableValue.hour < 14) return Places.HouseBasil;
+        else if (state.date.readableValue.hour < 16) return Places.Square;
+        else return Places.HouseBasil;
       } else {
-        return HouseBasil;
+        return Places.HouseBasil;
       }
     }
   },
@@ -57,14 +51,14 @@ export const Characters: Record<string, Character> = {
     name: "ムギ",
     url: require("@/assets/img/characters/barley.jpg"),
     place: () => {
-      return YodelRanch;
+      return Places.YodelRanch;
     }
   },
   Basil: {
     name: "バジル",
     url: require("@/assets/img/characters/basil.jpg"),
     place: () => {
-      return HouseBasil;
+      return Places.HouseBasil;
     }
   }
 };
