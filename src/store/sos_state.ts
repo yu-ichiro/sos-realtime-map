@@ -1,4 +1,9 @@
-import { getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
+import {
+  getModule,
+  Module,
+  Mutation,
+  VuexModule
+} from "vuex-module-decorators";
 import store from "@/store";
 
 export enum Seasons {
@@ -78,7 +83,9 @@ export class SosDate {
       season: Seasons[
         Math.floor((value % SosDate.year) / SosDate.month)
       ] as keyof typeof Seasons,
-      weekday: Weekdays[Math.floor(value / SosDate.day) % 7] as keyof typeof Weekdays,
+      weekday: Weekdays[
+        Math.floor(value / SosDate.day) % 7
+      ] as keyof typeof Weekdays,
       day: Math.floor((value % SosDate.month) / SosDate.day) + 1,
       hour: Math.floor((value % SosDate.day) / SosDate.hour) + 6,
       minute: Math.floor((value % SosDate.hour) / SosDate.minute)

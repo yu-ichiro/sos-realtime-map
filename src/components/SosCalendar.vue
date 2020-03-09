@@ -73,7 +73,6 @@ export default class SosCalender extends Vue {
   innerSosDate: SosDate = new SosDate(sosStateModule.date.value);
 
   get _sosDate(): SosDate {
-    console.log(this.sosDate);
     return this.sosDate ?? this.innerSosDate;
   }
 
