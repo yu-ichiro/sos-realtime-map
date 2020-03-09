@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
+    <v-app-bar app color="green" dark>
       牧場物語リアルタイムマップ
       <v-spacer></v-spacer>
       <sos-state></sos-state>

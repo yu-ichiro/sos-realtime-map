@@ -1,9 +1,4 @@
-import {
-  getModule,
-  Module,
-  Mutation,
-  VuexModule
-} from "vuex-module-decorators";
+import { getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import store from "@/store";
 
 export enum Seasons {
@@ -52,39 +47,51 @@ export class SosDate {
     return SosDate.getReadableValue(this.value);
   }
 
-  // statics
-  static getReadableValue(value: number): SosDateReadableValue {
-    const minute = 60;
-    const hour = 60 * minute;
-    const day = 24 * hour;
-    const month = 30 * day;
-    const year = 4 * month;
+  replaced(readableValue: Partial<SosDateReadableValue>): SosDate {
+    return new SosDate(
+      SosDate.getValue(
+        Object.assign(Object.create(null), this.readableValue, readableValue)
+      )
+    );
+  }
 
+  // statics
+  static get minute(): number {
+    return 60;
+  }
+  static get hour(): number {
+    return 60 * SosDate.minute;
+  }
+  static get day(): number {
+    return 24 * SosDate.hour;
+  }
+  static get month(): number {
+    return 30 * SosDate.day;
+  }
+  static get year(): number {
+    return 4 * SosDate.month;
+  }
+
+  static getReadableValue(value: number): SosDateReadableValue {
     return {
-      year: Math.floor(value / year) + 1,
+      year: Math.floor(value / SosDate.year) + 1,
       season: Seasons[
-        Math.floor((value % year) / month)
+        Math.floor((value % SosDate.year) / SosDate.month)
       ] as keyof typeof Seasons,
-      weekday: Weekdays[Math.floor(value / day) % 7] as keyof typeof Weekdays,
-      day: Math.floor((value % month) / day) + 1,
-      hour: Math.floor((value % day) / hour) + 6,
-      minute: Math.floor((value % hour) / minute)
+      weekday: Weekdays[Math.floor(value / SosDate.day) % 7] as keyof typeof Weekdays,
+      day: Math.floor((value % SosDate.month) / SosDate.day) + 1,
+      hour: Math.floor((value % SosDate.day) / SosDate.hour) + 6,
+      minute: Math.floor((value % SosDate.hour) / SosDate.minute)
     };
   }
 
   static getValue(readableValue: Partial<SosDateReadableValue>): number {
-    const minute = 60;
-    const hour = 60 * minute;
-    const day = 24 * hour;
-    const month = 30 * day;
-    const year = 4 * month;
-
     return (
-      ((readableValue.year ?? 1) - 1) * year +
-      Seasons[readableValue.season ?? "Spring"] * month +
-      ((readableValue.day ?? 1) - 1) * day +
-      ((readableValue.hour ?? 6) - 6) * hour +
-      (readableValue.minute ?? 0) * minute
+      ((readableValue.year ?? 1) - 1) * SosDate.year +
+      Seasons[readableValue.season ?? "Spring"] * SosDate.month +
+      ((readableValue.day ?? 1) - 1) * SosDate.day +
+      ((readableValue.hour ?? 6) - 6) * SosDate.hour +
+      (readableValue.minute ?? 0) * SosDate.minute
     );
   }
 }
@@ -123,14 +130,12 @@ function _unwrapMutableSosDate(_sosDate: SosDate): MutableSosDate {
 export interface SosStateInterface {
   date: SosDate;
   sunny: boolean;
-  auto: boolean;
 }
 
 @Module({ dynamic: true, store, name: "sosDate", namespaced: true })
 class SosStateModule extends VuexModule implements SosStateInterface {
   date: SosDate = new MutableSosDate();
   sunny = true;
-  auto = false;
 
   @Mutation
   increment() {

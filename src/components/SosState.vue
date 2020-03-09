@@ -1,29 +1,50 @@
 <template>
-  <v-dialog v-model="edit">
+  <v-dialog v-model="edit" max-width="720px">
     <template #activator="{ on }">
-      <div v-on="on">
-        <span>{{ sosDate.year }}年目</span>
-        <span>{{ seasonName(sosDate.season) }}</span>
-        <span>{{ sosDate.day }}日 ({{ weekdayName(sosDate.weekday) }})</span>
-        <span>{{ zeroPad(sosDate.hour) }}:{{ zeroPad(sosDate.minute) }}</span>
-      </div>
+      <v-btn v-on="on" light>
+        <span>{{ globalDate.year }}年目</span>
+        <span>
+          <span :style="{ color: seasonColor(globalDate.season) }">{{
+            seasonName(globalDate.season)
+          }}</span
+          >の月
+        </span>
+        <span>
+          {{ globalDate.day }}日 ({{ weekdayName(globalDate.weekday) }})
+        </span>
+        <span
+          ><v-icon>{{ weatherIcon(globalState) }}</v-icon>
+          {{ zeroPad(globalDate.hour) }}:{{ zeroPad(globalDate.minute) }}</span
+        >
+      </v-btn>
+      <v-btn text @click="increment">
+        <v-icon>mdi-arrow-right-thick</v-icon>
+      </v-btn>
+      <v-btn text @click="auto = !auto">
+        <v-icon>{{ auto ? "mdi-pause" : "mdi-play" }}</v-icon>
+      </v-btn>
+      <v-btn text @click="decrement" :disabled="!canGoBack">
+        <v-icon>mdi-arrow-left-thick</v-icon>
+      </v-btn>
     </template>
     <v-card>
-      <v-card-title class="headline">
-        時間の設定
-      </v-card-title>
+      <v-card-title class="headline"></v-card-title>
       <v-card-text>
-        <v-text-field v-model="localDateState.year" label="年" />
-        <v-select
-          :items="seasonTable"
-          item-text="text"
-          item-value="value"
-          v-model="localDateState.season"
-          label="季節"
-        />
-        <v-select :items="days" v-model="localDateState.day" label="日" />
-        <v-select :items="hours" v-model="localDateState.hour" label="時" />
-        <v-select :items="minutes" v-model="localDateState.minute" label="分" />
+        <sos-calendar v-if="edit" v-model="localState.date" />
+        <v-select :items="hours" v-model="localHour" label="時" />
+        <v-select :items="minutes" v-model="localMinute" label="分" />
+        <v-btn-toggle mandatory v-model="localSunny">
+          <v-btn>
+            <v-icon>
+              {{ weatherIcon(Object.assign({}, localState, { sunny: true })) }}
+            </v-icon>
+          </v-btn>
+          <v-btn>
+            <v-icon>
+              {{ weatherIcon(Object.assign({}, localState, { sunny: false })) }}
+            </v-icon>
+          </v-btn>
+        </v-btn-toggle>
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
@@ -45,29 +66,98 @@ import {
   Seasons,
   Weekdays,
   sosStateModule,
-  SosDateReadableValue
+  SosDateReadableValue,
+  SosStateInterface,
+  SosDate
 } from "@/store/sos_state";
-
-@Component
+import SosCalendar from "@/components/SosCalendar.vue";
+@Component({
+  components: { SosCalendar }
+})
 export default class SosState extends Vue {
   edit = false;
+  interval = -1;
 
-  localDateState: SosDateReadableValue = {
-    year: 1,
-    season: "Spring",
-    day: 2,
-    weekday: "Mon",
-    hour: 6,
-    minute: 0
+  localState: SosStateInterface = {
+    date: new SosDate(),
+    sunny: true
   };
+
+  get auto(): boolean {
+    return this.interval !== -1;
+  }
+
+  set auto(val: boolean) {
+    if (val) {
+      this.interval = setInterval(sosStateModule.increment, 5000);
+    } else {
+      clearInterval(this.interval as number);
+      this.interval = -1;
+    }
+  }
+
+  increment() {
+    sosStateModule.increment();
+  }
+
+  get canGoBack(): boolean {
+    return this.globalState.date.value > 10 * SosDate.minute;
+  }
+
+  decrement() {
+    if (!this.canGoBack) return;
+    sosStateModule.decrement();
+  }
+
+  get localDateState(): SosDateReadableValue {
+    return this.localState.date.readableValue;
+  }
+
+  set localDateState(readableValue: SosDateReadableValue) {
+    this.localState.date = this.localState.date.replaced(readableValue);
+  }
+
+  get localHour(): number {
+    return this.localDateState.hour;
+  }
+
+  set localHour(hour: number) {
+    this.localDateState = Object.assign(this.localDateState, { hour: hour });
+  }
+
+  get localMinute(): number {
+    return this.localDateState.minute;
+  }
+
+  set localMinute(minute: number) {
+    this.localDateState = Object.assign(this.localDateState, {
+      minute: minute
+    });
+  }
+
+  get localSunny(): number {
+    return this.localState.sunny ? 0 : 1;
+  }
+
+  set localSunny(sunny: number) {
+    this.localState.sunny = sunny === 0;
+  }
 
   @Watch("edit")
   onEditChange() {
-    this.localDateState = Object.assign(Object.create(null), this.sosDate);
+    this.localState = Object.assign(Object.create(null), this.globalState);
+  }
+
+  get globalState(): SosStateInterface {
+    return {
+      date: sosStateModule.date,
+      sunny: sosStateModule.sunny
+    };
   }
 
   update() {
-    sosStateModule.replaceDateState(this.localDateState);
+    sosStateModule.replaceDateState(this.localState.date.readableValue);
+    sosStateModule.setSunnyState(this.localState.sunny);
     this.edit = false;
   }
 
@@ -76,11 +166,26 @@ export default class SosState extends Vue {
   }
 
   seasonName(season: keyof typeof Seasons) {
-    if (season == "Spring") return "春";
-    if (season == "Summer") return "夏";
-    if (season == "Autumn") return "秋";
-    if (season == "Winter") return "冬";
+    if (season == "Spring") return "はる";
+    if (season == "Summer") return "なつ";
+    if (season == "Autumn") return "あき";
+    if (season == "Winter") return "ふゆ";
     throw new Error("Unreachable");
+  }
+
+  seasonColor(season: keyof typeof Seasons) {
+    if (season == "Spring") return "#c80a56";
+    if (season == "Summer") return "#29940a";
+    if (season == "Autumn") return "#b95c1f";
+    if (season == "Winter") return "#2870c5";
+    throw new Error("Unreachable");
+  }
+
+  weatherIcon(state: SosStateInterface): string {
+    if (state.sunny) return "mdi-weather-sunny";
+    else if (state.date.readableValue.season == "Winter")
+      return "mdi-weather-snowy";
+    else return "mdi-weather-pouring";
   }
 
   weekdayName(season: keyof typeof Weekdays) {
@@ -94,8 +199,8 @@ export default class SosState extends Vue {
     throw new Error("Unreachable");
   }
 
-  get sosDate(): SosDateReadableValue {
-    return sosStateModule.date.readableValue;
+  get globalDate(): SosDateReadableValue {
+    return this.globalState.date.readableValue;
   }
 
   // form
@@ -124,5 +229,3 @@ export default class SosState extends Vue {
   }
 }
 </script>
-
-<style scoped></style>
