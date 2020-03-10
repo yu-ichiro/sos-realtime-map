@@ -2,7 +2,7 @@
   <l-map
     ref="map"
     id="map"
-    style="height: 100%; z-index: 1;"
+    style="z-index: 0;"
     :crs="crs"
     :min-zoom="-1"
     :max-zoom="6"

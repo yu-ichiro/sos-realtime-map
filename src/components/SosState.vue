@@ -1,31 +1,37 @@
 <template>
   <v-dialog v-model="edit" max-width="720px">
     <template #activator="{ on }">
-      <v-btn v-on="on" light>
-        <span>{{ globalDate.year }}年目</span>
-        <span>
-          <span :style="{ color: seasonColor(globalDate.season) }">{{
-            seasonName(globalDate.season)
-          }}</span
-          >の月
-        </span>
-        <span>
-          {{ globalDate.day }}日 ({{ weekdayName(globalDate.weekday) }})
-        </span>
-        <span
+      <v-card class="action-panel">
+        <v-btn v-on="on" text>
+          <span>
+            <span :style="{ color: seasonColor(globalDate.season) }">{{
+              seasonName(globalDate.season)
+            }}</span
+            >の月</span
+          >
+          <span>
+            {{ globalDate.day }}日 ({{ weekdayName(globalDate.weekday) }})
+          </span>
+        </v-btn>
+        <br />
+        <v-btn text small @click="toggleWeather"
           ><v-icon>{{ weatherIcon(globalState) }}</v-icon>
-          {{ zeroPad(globalDate.hour) }}:{{ zeroPad(globalDate.minute) }}</span
+        </v-btn>
+        <v-btn text small @click="decrement" :disabled="!canGoBack">
+          <v-icon>mdi-arrow-left-thick</v-icon>
+        </v-btn>
+        <v-btn
+          text
+          small
+          @click="auto = !auto"
+          :color="auto ? 'primary' : 'normal'"
         >
-      </v-btn>
-      <v-btn text @click="increment">
-        <v-icon>mdi-arrow-right-thick</v-icon>
-      </v-btn>
-      <v-btn text @click="auto = !auto">
-        <v-icon>{{ auto ? "mdi-pause" : "mdi-play" }}</v-icon>
-      </v-btn>
-      <v-btn text @click="decrement" :disabled="!canGoBack">
-        <v-icon>mdi-arrow-left-thick</v-icon>
-      </v-btn>
+          {{ zeroPad(globalDate.hour) }}:{{ zeroPad(globalDate.minute) }}
+        </v-btn>
+        <v-btn text small @click="increment">
+          <v-icon>mdi-arrow-right-thick</v-icon>
+        </v-btn>
+      </v-card>
     </template>
     <v-card>
       <v-card-title class="headline"></v-card-title>
@@ -101,12 +107,16 @@ export default class SosState extends Vue {
   }
 
   get canGoBack(): boolean {
-    return this.globalState.date.value > 10 * SosDate.minute;
+    return this.globalState.date.value >= 10 * SosDate.minute;
   }
 
   decrement() {
     if (!this.canGoBack) return;
     sosStateModule.decrement();
+  }
+
+  toggleWeather() {
+    sosStateModule.setSunnyState(!this.globalState.sunny);
   }
 
   get localDateState(): SosDateReadableValue {
@@ -229,3 +239,16 @@ export default class SosState extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.action-panel {
+  padding: 5px;
+  text-align: center;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 1;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+}
+</style>

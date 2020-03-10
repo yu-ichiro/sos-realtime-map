@@ -1,56 +1,61 @@
 <template>
-  <div class="calendar">
-    <div class="season">
-      <div
-        class="background"
-        :style="{
-          'background-color': seasonColor(_sosDate.readableValue.season)
+  <table class="calendar">
+    <tr>
+      <th class="season" colspan="7">
+        <div
+          class="background"
+          :style="{
+            'background-color': seasonColor(_sosDate.readableValue.season)
+          }"
+        ></div>
+        <v-btn
+          style="position: absolute; left: 0; top: 10px; z-index: 5"
+          :disabled="!canGoBack"
+          @click="previousMonth"
+          text
+        >
+          <v-icon>mdi-arrow-left-thick</v-icon>
+        </v-btn>
+        <v-btn
+          style="position: absolute; right: 0; top: 10px; z-index: 5"
+          @click="nextMonth"
+          text
+        >
+          <v-icon>mdi-arrow-right-thick</v-icon>
+        </v-btn>
+        <div class="year">{{ _sosDate.readableValue.year }}年目</div>
+        <div class="text">
+          {{ seasonName(_sosDate.readableValue.season) }}の月
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <th class="header sun">日</th>
+      <th class="header">月</th>
+      <th class="header">火</th>
+      <th class="header">水</th>
+      <th class="header">木</th>
+      <th class="header">金</th>
+      <th class="header sat">土</th>
+    </tr>
+    <tr v-for="(row, i) in calenderDays" :key="i">
+      <td
+        :class="{
+          empty: day.empty,
+          today: day.today,
+          sun: i % 7 === 0,
+          sat: i % 7 === 6
         }"
-      ></div>
-      <v-btn
-        style="position: absolute; left: 30px; top: 20px; z-index: 5"
-        :disabled="!canGoBack"
-        @click="previousMonth"
-        text
+        @click="clickDay(day)"
+        v-for="(day, i) in row"
+        :key="i"
       >
-        <v-icon>mdi-arrow-left-thick</v-icon>
-      </v-btn>
-      <v-btn
-        style="position: absolute; right: 30px; top: 20px; z-index: 5"
-        @click="nextMonth"
-        text
-      >
-        <v-icon>mdi-arrow-right-thick</v-icon>
-      </v-btn>
-      <div class="year">{{ _sosDate.readableValue.year }}年目</div>
-      <div class="text">
-        {{ seasonName(_sosDate.readableValue.season) }}の月
-      </div>
-    </div>
-    <div class="cell header sun">日</div>
-    <div class="cell header">月</div>
-    <div class="cell header">火</div>
-    <div class="cell header">水</div>
-    <div class="cell header">木</div>
-    <div class="cell header">金</div>
-    <div class="cell header sat">土</div>
-    <div
-      :class="{
-        cell: true,
-        empty: day.empty,
-        today: day.today,
-        sun: i % 7 === 0,
-        sat: i % 7 === 6
-      }"
-      @click="clickDay(day)"
-      v-for="(day, i) in calenderDays"
-      :key="i"
-    >
-      <div class="date">{{ day.date }}</div>
-      <div class="birthday" v-if="day.birthday"></div>
-      <div class="event" v-if="day.event"></div>
-    </div>
-  </div>
+        <div class="date">{{ day.date }}</div>
+        <div class="birthday" v-if="day.birthday"></div>
+        <div class="event" v-if="day.event"></div>
+      </td>
+    </tr>
+  </table>
 </template>
 
 <script lang="ts">
@@ -115,7 +120,7 @@ export default class SosCalender extends Vue {
     throw new Error("Unreachable");
   }
 
-  get calenderDays(): CalenderDay[] {
+  get calenderDays(): CalenderDay[][] {
     const firstDay = this._sosDate.replaced({ day: 1 }).readableValue;
     const lastDay = this._sosDate.replaced({ day: 30 }).readableValue;
     const days: CalenderDay[] = [];
@@ -151,35 +156,48 @@ export default class SosCalender extends Vue {
         event: false,
         today: false
       });
-    return days;
+    return days.reduce<CalenderDay[][]>((acc, day, idx) => {
+      const row = Math.floor(idx / 7);
+      if (acc.length <= row) acc.push([]);
+      acc[row].push(day);
+      return acc;
+    }, []);
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .calendar {
-  display: flex;
-  flex-wrap: wrap;
+  max-width: 672px;
+  max-height: 510px;
+  width: 100%;
+  height: calc(100vw / 672 * 510);
   background-color: #e3e6ca;
   border-radius: 20px;
   border: solid 3px #b1ae8a;
-  padding: 20px;
+  border-spacing: 4px;
+  padding: calc(10px + 1vw);
 
   .season {
-    flex: 1 0 100%;
-    height: 70px;
+    opacity: 1;
+    height: 3em;
     position: relative;
     border-radius: 10px;
+    border: solid 5px #b1ae8a;
     background-color: #b1ae8a;
     margin-bottom: 10px;
     z-index: 0;
 
+    &:hover {
+      cursor: initial;
+    }
+
     .background {
       position: relative;
       top: 0;
-      width: 40%;
+      width: 50%;
       height: 10px;
-      margin: 40px auto 0 auto;
+      margin: 35px auto 5px auto;
       border-radius: 5px;
       background-color: white;
       z-index: 1;
@@ -187,7 +205,7 @@ export default class SosCalender extends Vue {
 
     .year {
       position: absolute;
-      margin: 10px 0;
+      margin: 5px 0;
       top: 0;
       left: 0;
       width: 100%;
@@ -201,7 +219,7 @@ export default class SosCalender extends Vue {
 
     .text {
       position: absolute;
-      margin: 30px 0;
+      margin: 20px 0;
       top: 0;
       left: 0;
       width: 100%;
@@ -216,23 +234,22 @@ export default class SosCalender extends Vue {
     }
   }
 
-  .cell {
-    height: 50px;
+  th,
+  td {
     position: relative;
     border-radius: 10px;
     margin: calc(0.13em + 0.04vw);
-    flex: 1 0 calc(100% / 7 - 0.6em - 0.2vw);
     opacity: 0.5;
     color: #251411;
+    border: solid 5px #d18b17;
     background-color: #d18b17;
-    padding: 10px 15px;
     font-size: calc(0.9em + 0.1vw);
     font-weight: bold;
 
     &.empty {
       color: transparent;
       background-color: transparent !important;
-      border: solid 5px black;
+      border: solid 5px black !important;
       opacity: 0.3;
 
       &:hover {
@@ -242,22 +259,25 @@ export default class SosCalender extends Vue {
     }
 
     &.today {
+      border: solid 5px lighten(#6cda1e, 40) !important;
       background-color: #6cda1e !important;
       opacity: 1;
     }
 
     &.sun {
+      border: solid 5px #c41f27;
       background-color: #c41f27;
     }
 
     &.sat {
+      border: solid 5px #2b91c4;
       background-color: #2b91c4;
     }
 
     &.header {
-      padding: 0;
       height: 36px;
-      line-height: 36px;
+      padding: 0;
+      line-height: 26px;
       color: white;
       border-radius: 10px;
       text-align: center;
