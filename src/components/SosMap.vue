@@ -9,11 +9,19 @@
     :bounds="bounds"
   >
     <l-image-overlay :url="url" :bounds="bounds"></l-image-overlay>
-    <character-marker
-      :character="character"
-      v-for="character in characters"
-      :key="character.name"
-    ></character-marker>
+    <template v-for="[place, characters] in groupedCharacters">
+      <character-marker
+        v-if="characters.length === 1"
+        :character="characters[0]"
+        :key="characters[0].name"
+      ></character-marker>
+      <group-marker
+        v-else
+        :place="place"
+        :characters="characters"
+        :key="place.memo"
+      ></group-marker>
+    </template>
   </l-map>
 </template>
 
@@ -22,16 +30,18 @@ import { Component, Vue } from "vue-property-decorator";
 import { CRS, LatLngBounds } from "leaflet";
 import { LMap, LImageOverlay } from "vue2-leaflet";
 import { mapImage } from "@/map";
-import MiscStore from "@/components/MiscStore.vue";
 import SosStore from "@/components/SosStore.vue";
 import CharacterMarker from "@/components/CharacterMarker.vue";
 import { Characters } from "@/assets/characters";
+import { sosStateModule } from "@/store/sos_state";
+import { groupBy } from "@/util";
+import GroupMarker from "@/components/GroupMarker.vue";
 
 @Component({
   components: {
+    GroupMarker,
     CharacterMarker,
     SosStore,
-    MiscStore,
     LMap,
     LImageOverlay
   }
@@ -42,6 +52,12 @@ export default class SosMap extends Vue {
     [mapImage.height, 0],
     [0, mapImage.width]
   );
+
+  get groupedCharacters() {
+    return groupBy(Object.values(Characters), char =>
+      char.place(sosStateModule.getState)
+    );
+  }
 
   get characters() {
     return Object.values(Characters);

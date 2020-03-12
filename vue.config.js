@@ -1,3 +1,9 @@
 module.exports = {
-  transpileDependencies: ["vuetify"]
+  transpileDependencies: ["vuetify"],
+  devServer: {
+    headers: {
+      "Cache-Control": "no-cache; max-age=0",
+      Vary: "*"
+    }
+  }
 };

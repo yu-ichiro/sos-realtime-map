@@ -139,10 +139,17 @@ export interface SosStateInterface {
   sunny: boolean;
 }
 
-@Module({ dynamic: true, store, name: "sosDate", namespaced: true })
+@Module({ dynamic: true, store, name: "sosDate" })
 class SosStateModule extends VuexModule implements SosStateInterface {
   date: SosDate = new MutableSosDate();
   sunny = true;
+
+  get getState(): SosStateInterface {
+    return {
+      date: this.date,
+      sunny: this.sunny
+    };
+  }
 
   @Mutation
   increment() {
