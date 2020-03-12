@@ -57,4 +57,8 @@ export default class App extends Vue {
 .v-application--wrap {
   min-height: 100% !important;
 }
+
+button {
+  touch-action: manipulation;
+}
 </style>

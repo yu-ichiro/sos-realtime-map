@@ -2,6 +2,9 @@
   <v-dialog v-model="edit" max-width="720px">
     <template #activator="{ on }">
       <v-card class="action-panel">
+        <v-btn icon @click="decrementDay" :disabled="!canGoBackDay">
+          <v-icon>mdi-arrow-left-thick</v-icon>
+        </v-btn>
         <v-btn v-on="on" text>
           <span>
             <span :style="{ color: seasonColor(globalDate.season) }">{{
@@ -13,11 +16,14 @@
             {{ globalDate.day }}日 ({{ weekdayName(globalDate.weekday) }})
           </span>
         </v-btn>
+        <v-btn icon @click="incrementDay">
+          <v-icon>mdi-arrow-right-thick</v-icon>
+        </v-btn>
         <br />
-        <v-btn text small @click="toggleWeather"
+        <v-btn icon @click="toggleWeather"
           ><v-icon>{{ weatherIcon(globalState) }}</v-icon>
         </v-btn>
-        <v-btn text small @click="decrement" :disabled="!canGoBack">
+        <v-btn icon @click="decrement" :disabled="!canGoBack">
           <v-icon>mdi-arrow-left-thick</v-icon>
         </v-btn>
         <v-btn
@@ -28,7 +34,7 @@
         >
           {{ zeroPad(globalDate.hour) }}:{{ zeroPad(globalDate.minute) }}
         </v-btn>
-        <v-btn text small @click="increment">
+        <v-btn icon @click="increment">
           <v-icon>mdi-arrow-right-thick</v-icon>
         </v-btn>
       </v-card>
@@ -37,20 +43,6 @@
       <v-card-title class="headline"></v-card-title>
       <v-card-text>
         <sos-calendar v-if="edit" v-model="localState.date" />
-        <v-select :items="hours" v-model="localHour" label="時" />
-        <v-select :items="minutes" v-model="localMinute" label="分" />
-        <v-btn-toggle mandatory v-model="localSunny">
-          <v-btn>
-            <v-icon>
-              {{ weatherIcon(Object.assign({}, localState, { sunny: true })) }}
-            </v-icon>
-          </v-btn>
-          <v-btn>
-            <v-icon>
-              {{ weatherIcon(Object.assign({}, localState, { sunny: false })) }}
-            </v-icon>
-          </v-btn>
-        </v-btn-toggle>
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
@@ -77,6 +69,7 @@ import {
   SosDate
 } from "@/store/sos_state";
 import SosCalendar from "@/components/SosCalendar.vue";
+
 @Component({
   components: { SosCalendar }
 })
@@ -115,42 +108,29 @@ export default class SosState extends Vue {
     sosStateModule.decrement();
   }
 
-  toggleWeather() {
-    sosStateModule.setSunnyState(!this.globalState.sunny);
-  }
-
-  get localDateState(): SosDateReadableValue {
-    return this.localState.date.readableValue;
-  }
-
-  set localDateState(readableValue: SosDateReadableValue) {
-    this.localState.date = this.localState.date.replaced(readableValue);
-  }
-
-  get localHour(): number {
-    return this.localDateState.hour;
-  }
-
-  set localHour(hour: number) {
-    this.localDateState = Object.assign(this.localDateState, { hour: hour });
-  }
-
-  get localMinute(): number {
-    return this.localDateState.minute;
-  }
-
-  set localMinute(minute: number) {
-    this.localDateState = Object.assign(this.localDateState, {
-      minute: minute
+  incrementDay() {
+    sosStateModule.replaceDateState({
+      day: sosStateModule.date.readableValue.day + 1,
+      hour: 6,
+      minute: 0
     });
   }
 
-  get localSunny(): number {
-    return this.localState.sunny ? 0 : 1;
+  get canGoBackDay(): boolean {
+    return this.globalState.date.value >= SosDate.day;
   }
 
-  set localSunny(sunny: number) {
-    this.localState.sunny = sunny === 0;
+  decrementDay() {
+    if (!this.canGoBackDay) return;
+    sosStateModule.replaceDateState({
+      day: sosStateModule.date.readableValue.day - 1,
+      hour: 6,
+      minute: 0
+    });
+  }
+
+  toggleWeather() {
+    sosStateModule.setSunnyState(!this.globalState.sunny);
   }
 
   @Watch("edit")
@@ -211,31 +191,6 @@ export default class SosState extends Vue {
 
   get globalDate(): SosDateReadableValue {
     return this.globalState.date.readableValue;
-  }
-
-  // form
-  get seasonTable() {
-    const table = [];
-    for (const key in Seasons) {
-      if (!isNaN(Number(key))) continue;
-      table.push({
-        value: key,
-        text: this.seasonName(key as keyof typeof Seasons)
-      });
-    }
-    return table;
-  }
-
-  get days(): number[] {
-    return new Array(30).fill(null).map((_, i) => i + 1);
-  }
-
-  get hours(): number[] {
-    return new Array(24).fill(null).map((_, i) => i + 6);
-  }
-
-  get minutes(): number[] {
-    return new Array(6).fill(null).map((_, i) => i * 10);
   }
 }
 </script>
