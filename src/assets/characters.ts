@@ -78,7 +78,8 @@ export const Characters: Record<string, Character> = {
           return Places.MountainMiddle;
         else return Places.HouseBasil;
       } else if (state.date.readableValue.hour < 13) return Places.HouseBasil;
-      else if (state.date.readableValue.hour < 16) return Places.HouseBasilSecond;
+      else if (state.date.readableValue.hour < 16)
+        return Places.HouseBasilSecond;
       else if (state.date.readableValue.hour < 19) return Places.HouseBasil;
       else if (state.date.readableValue.hour < 22) return Places.Hotel;
       return Places.HouseBasilSecond;
@@ -99,6 +100,30 @@ export const Characters: Record<string, Character> = {
           return Places.ChurchConfession;
         else return Places.ChurchFront;
       return Places.Church;
+    }
+  },
+  Cliff: {
+    name: "クリフ",
+    url: require("@/assets/img/characters/cliff.jpg"),
+    place: state => {
+      if (!(() => false)() /* TODO: イベント実装時にクリフのバイト判定をstateに入れる */) {
+        if (state.date.readableValue.hour < 9) return Places.HotelSecond;
+        else if (state.date.readableValue.hour < 16) return Places.Church;
+        return Places.HotelSecond;
+      } else {
+        if (state.sunny && state.date.readableValue.weekday !== "Sat") {
+          if (state.date.readableValue.hour < 9) return Places.HotelSecond;
+          else if (state.date.readableValue.hour < 13) return Places.WineryBase;
+          else if (state.date.readableValue.hour < 17) return Places.WineryYard;
+          else if (state.date.readableValue.hour < 20) return Places.Church;
+          return Places.HotelSecond;
+        } else {
+          if (state.date.readableValue.hour < 13) return Places.HotelSecond;
+          else if (state.date.readableValue.hour < 17) return Places.Hotel;
+          else if (state.date.readableValue.hour < 20) return Places.Church;
+          return Places.HotelSecond;
+        }
+      }
     }
   }
 };

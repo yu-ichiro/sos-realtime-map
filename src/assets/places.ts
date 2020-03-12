@@ -131,6 +131,24 @@ export const Places: Record<string, Place> = {
     x: 490,
     y: 83
   },
+  Winery: {
+    memo: "アージュワイナリー",
+    accessible: () => true,
+    x: 414,
+    y: 283
+  },
+  WineryBase: {
+    memo: "アージュワイナリー(貯蔵庫)",
+    accessible: () => true,
+    x: 442,
+    y: 274
+  },
+  WineryYard: {
+    memo: "アージュワイナリー(果樹園)",
+    accessible: () => true,
+    x: 459,
+    y: 293
+  },
   ChickenRanch: {
     memo: "にわとりりあ",
     accessible: () => true,
