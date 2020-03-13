@@ -90,3 +90,10 @@ export default class SosMap extends Vue {
   }
 }
 </script>
+
+<style>
+/*noinspection CssUnusedSymbol*/
+.leaflet-marker-icon {
+  transition: transform 1s linear;
+}
+</style>

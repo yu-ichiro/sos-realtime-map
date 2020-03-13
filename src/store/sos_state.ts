@@ -171,6 +171,11 @@ class SosStateModule extends VuexModule implements SosStateInterface {
   }
 
   @Mutation
+  addValue(value: number) {
+    this.date = new MutableSosDate(this.date.value + value);
+  }
+
+  @Mutation
   setSunnyState(val: boolean) {
     this.sunny = val;
   }

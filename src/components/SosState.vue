@@ -32,7 +32,7 @@
           @click="auto = !auto"
           :color="auto ? 'primary' : 'normal'"
         >
-          {{ zeroPad(globalDate.hour) }}:{{ zeroPad(globalDate.minute) }}
+          {{ zeroPad(globalDate.hour) }}:{{ zeroPad(minutesMod10) }}
         </v-btn>
         <v-btn icon @click="increment">
           <v-icon>mdi-arrow-right-thick</v-icon>
@@ -87,8 +87,9 @@ export default class SosState extends Vue {
   }
 
   set auto(val: boolean) {
+    const tick = () => sosStateModule.addValue(SosDate.minute);
     if (val) {
-      this.interval = setInterval(sosStateModule.increment, 5000);
+      this.interval = setInterval(tick, 500);
     } else {
       clearInterval(this.interval as number);
       this.interval = -1;
@@ -143,6 +144,10 @@ export default class SosState extends Vue {
       date: sosStateModule.date,
       sunny: sosStateModule.sunny
     };
+  }
+
+  get minutesMod10(): number {
+    return Math.floor(this.globalDate.minute / 10) * 10;
   }
 
   update() {

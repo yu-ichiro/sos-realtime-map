@@ -2,6 +2,22 @@
 import { stateCondition } from "@/store/sos_state";
 import { Characters } from "@/assets/characters";
 
+export type Vector = [number, number]
+
+export const vec2Pos = (vec: [number, number]) => ({
+  x: vec[0],
+  y: vec[1]
+});
+
+export const pos2Vec = (pos: { x: number; y: number }) =>
+  [pos.x, pos.y] as Vector;
+
+export const scale = (vec: Vector, vel: number) =>
+  [vel * vec[0], vel * vec[1]] as Vector;
+
+export const add = (vec1: Vector, vec2: Vector) =>
+  [vec1[0] + vec2[0], vec1[1] + vec2[1]] as Vector;
+
 export interface Place {
   memo: string;
   accessible: stateCondition;

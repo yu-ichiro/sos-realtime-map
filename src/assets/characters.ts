@@ -2,6 +2,7 @@
 import { Seasons, stateDependent, Weekdays } from "@/store/sos_state";
 import { Place, Places } from "@/assets/places";
 import { DefaultedKey, immediate, wrap } from "@/util";
+import { move, Routes } from "@/assets/routes";
 
 export interface Character {
   name: string;
@@ -9,17 +10,31 @@ export interface Character {
   place: stateDependent<Place>;
 }
 
-const timeSwitch = (
-  timeMapList: [number, stateDependent<Place>][]
+const minuteSwitch = (
+  minuteMapList: [number, stateDependent<Place>][]
 ): stateDependent<Place> => {
-  const timeMap = new Map<number, stateDependent<Place>>(timeMapList);
+  const minuteMap = new Map<number, stateDependent<Place>>(minuteMapList);
+  return state => {
+    let currentMinute = state.date.readableValue.minute;
+    while (minuteMap.get(currentMinute) == null) {
+      currentMinute--;
+      if (currentMinute < 0) break;
+    }
+    return (minuteMap.get(currentMinute) ?? (() => Places.Nowhere))(state);
+  };
+};
+
+const hourSwitch = (
+  hourMapList: [number, stateDependent<Place>][]
+): stateDependent<Place> => {
+  const hourMap = new Map<number, stateDependent<Place>>(hourMapList);
   return state => {
     let currentHour = state.date.readableValue.hour;
-    while (timeMap.get(currentHour) == null) {
+    while (hourMap.get(currentHour) == null) {
       currentHour--;
       if (currentHour < 6) break;
     }
-    return (timeMap.get(currentHour) ?? (() => Places.Nowhere))(state);
+    return (hourMap.get(currentHour) ?? (() => Places.Nowhere))(state);
   };
 };
 
@@ -49,6 +64,7 @@ const weekdaySwitch = (
   };
 };
 
+// noinspection JSUnusedLocalSymbols
 const seasonsSwitch = (
   seasonMapList: [DefaultedKey<typeof Seasons>, stateDependent<Place>][]
 ): stateDependent<Place> => {
@@ -69,7 +85,7 @@ export const Characters: Record<string, Character> = {
   Ann: {
     name: "ラン",
     url: require("@/assets/img/characters/ann.jpg"),
-    place: timeSwitch([
+    place: hourSwitch([
       [6, wrap(Places.HotelPrivate)],
       [
         7,
@@ -88,7 +104,7 @@ export const Characters: Record<string, Character> = {
   Anna: {
     name: "アンナ",
     url: require("@/assets/img/characters/anna.jpg"),
-    place: timeSwitch([
+    place: hourSwitch([
       [6, wrap(Places.HouseBasil)],
       [
         7,
@@ -124,7 +140,7 @@ export const Characters: Record<string, Character> = {
   Barley: {
     name: "ムギ",
     url: require("@/assets/img/characters/barley.jpg"),
-    place: timeSwitch([
+    place: hourSwitch([
       [6, wrap(Places.YodelRanch)],
       [
         8,
@@ -165,7 +181,7 @@ export const Characters: Record<string, Character> = {
   Basil: {
     name: "バジル",
     url: require("@/assets/img/characters/basil.jpg"),
-    place: timeSwitch([
+    place: hourSwitch([
       [6, wrap(Places.HouseBasilSecond)],
       [
         7,
@@ -191,22 +207,34 @@ export const Characters: Record<string, Character> = {
     name: "カーター",
     url: require("@/assets/img/characters/carter.jpg"),
     place: state => {
-      const insideChurch = timeSwitch([
-        [6, wrap(Places.ChurchGrave)],
-        [9, wrap(Places.Church)],
-        [13, wrap(Places.ChurchConfession)],
-        [16, wrap(Places.Church)]
-      ]);
-      const outsideChurch = timeSwitch([
-        [6, wrap(Places.ChurchGrave)],
-        [9, wrap(Places.Church)],
-        [13, wrap(Places.ChurchFront)],
-        [16, wrap(Places.Church)]
-      ]);
       const weekday = state.date.readableValue.weekday;
-      if (!state.sunny || weekday === "Mon" || weekday === "Wed")
-        return insideChurch(state);
-      else return outsideChurch(state);
+      const toggleConfession: stateDependent<Place> = () =>
+        !state.sunny || weekday === "Mon" || weekday === "Wed"
+          ? Places.ChurchConfession
+          : Places.Church;
+      return hourSwitch([
+        [6, wrap(Places.ChurchGrave)],
+        [
+          8,
+          minuteSwitch([
+            [0, wrap(Places.ChurchGrave)],
+            [
+              50,
+              move(
+                Places.ChurchGrave,
+                Places.Church,
+                Routes.GraveToChurch,
+                8,
+                50,
+                10
+              )
+            ]
+          ])
+        ],
+        [9, wrap(Places.Church)],
+        [13, toggleConfession],
+        [16, wrap(Places.Church)]
+      ])(state);
     }
   },
   Cliff: {
@@ -218,19 +246,19 @@ export const Characters: Record<string, Character> = {
           false
         ) /* TODO: イベント実装時にクリフのバイト判定をstateに入れる */
       ) {
-        return timeSwitch([
+        return hourSwitch([
           [6, wrap(Places.HotelSecond)],
           [9, wrap(Places.Church)],
           [16, wrap(Places.HotelSecond)]
         ])(state);
       } else {
-        const noWork = timeSwitch([
+        const noWork = hourSwitch([
           [6, wrap(Places.HotelSecond)],
           [13, wrap(Places.Hotel)],
           [17, wrap(Places.Church)],
           [20, wrap(Places.HotelSecond)]
         ]);
-        const work = timeSwitch([
+        const work = hourSwitch([
           [6, wrap(Places.HotelSecond)],
           [9, wrap(Places.WineryBase)],
           [13, wrap(Places.WineryYard)],
@@ -254,7 +282,7 @@ export const Characters: Record<string, Character> = {
     place: weekdaySwitch([
       [
         "default",
-        timeSwitch([
+        hourSwitch([
           [6, wrap(Places.HospitalSecond)],
           [9, wrap(Places.Hospital)],
           [19, wrap(Places.HospitalSecond)]
@@ -262,7 +290,7 @@ export const Characters: Record<string, Character> = {
       ],
       [
         "Wed",
-        timeSwitch([
+        hourSwitch([
           [6, wrap(Places.HospitalSecond)],
           [
             7,
