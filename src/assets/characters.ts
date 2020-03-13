@@ -106,7 +106,7 @@ export const Characters: Record<string, Character> = {
     name: "クリフ",
     url: require("@/assets/img/characters/cliff.jpg"),
     place: state => {
-      if (!(() => false)() /* TODO: イベント実装時にクリフのバイト判定をstateに入れる */) {
+      if ((() => false)() /* TODO: イベント実装時にクリフのバイト判定をstateに入れる */) {
         if (state.date.readableValue.hour < 9) return Places.HotelSecond;
         else if (state.date.readableValue.hour < 16) return Places.Church;
         return Places.HotelSecond;
