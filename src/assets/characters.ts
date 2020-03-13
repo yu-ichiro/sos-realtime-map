@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { stateDependent } from "@/store/sos_state";
 import { Place, Places } from "@/assets/places";
+import { immediate } from "@/util";
 
 export interface Character {
   name: string;
@@ -106,7 +107,11 @@ export const Characters: Record<string, Character> = {
     name: "クリフ",
     url: require("@/assets/img/characters/cliff.jpg"),
     place: state => {
-      if ((() => false)() /* TODO: イベント実装時にクリフのバイト判定をstateに入れる */) {
+      if (
+        immediate(
+          false
+        ) /* TODO: イベント実装時にクリフのバイト判定をstateに入れる */
+      ) {
         if (state.date.readableValue.hour < 9) return Places.HotelSecond;
         else if (state.date.readableValue.hour < 16) return Places.Church;
         return Places.HotelSecond;

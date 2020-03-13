@@ -11,3 +11,5 @@ export const groupBy = <K, V>(
       return map;
     }, new Map<K, V[]>())
   );
+
+export const immediate = <T>(value: T) => value;
