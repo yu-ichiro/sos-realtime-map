@@ -8,7 +8,11 @@
     :max-zoom="6"
     :bounds="bounds"
   >
-    <l-image-overlay :url="url" :bounds="bounds"></l-image-overlay>
+    <l-image-overlay
+      :url="url"
+      :bounds="bounds"
+      :attribution="attribution"
+    ></l-image-overlay>
     <template v-for="[place, characters] in groupedCharacters">
       <character-marker
         v-if="characters.length === 1"
@@ -64,7 +68,25 @@ export default class SosMap extends Vue {
   }
 
   get url(): string {
+    if (sosStateModule.date.readableValue.season === "Winter")
+      return require("@/assets/img/map-winter.jpg");
     return mapImage.url;
+  }
+
+  anchorTag(url: string, innerText?: string): string {
+    return `<a href="${url}" target="_blank">${innerText ?? url}</a>`;
+  }
+
+  get attribution(): string {
+    const attrs: string[] = [
+      this.anchorTag(
+        "https://github.com/yu-ichiro/sos-realtime-map",
+        "Yu-ichiro"
+      ),
+      "&copy;2017 Nintendo",
+      "&copy;2019 Marvelous Inc."
+    ];
+    return attrs.join(" | ");
   }
 }
 </script>
