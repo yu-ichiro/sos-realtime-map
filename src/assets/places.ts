@@ -34,6 +34,12 @@ export const Places: Record<string, Place> = {
     x: 242,
     y: 360
   },
+  Lake: {
+    memo: "湖周辺",
+    accessible: () => true,
+    x: 87,
+    y: 457
+  },
   HotSpring: {
     memo: "温泉",
     accessible: () => true,
@@ -91,13 +97,15 @@ export const Places: Record<string, Place> = {
   },
   HouseBasil: {
     memo: "バジルの家",
-    accessible: () => true,
+    accessible: state =>
+      Characters.Anna.place(state) === Places.HouseBasil ||
+      Characters.Basil.place(state) === Places.HouseBasil,
     x: 377,
     y: 82
   },
   HouseBasilSecond: {
     memo: "バジルの家(2階)",
-    accessible: () => true,
+    accessible: state => Places.HouseBasil.accessible(state),
     x: 388,
     y: 59
   },
@@ -178,5 +186,29 @@ export const Places: Record<string, Place> = {
     accessible: () => true,
     x: 581,
     y: 93
+  },
+  Hospital: {
+    memo: "病院",
+    accessible: state => Characters.Doctor.place(state) === Places.Hospital,
+    x: 666,
+    y: 90
+  },
+  HospitalSecond: {
+    memo: "病院(2階)",
+    accessible: state => Places.Hospital.accessible(state),
+    x: 650,
+    y: 66
+  },
+  Library: {
+    memo: "図書館",
+    accessible: () => true,
+    x: 408,
+    y: 85
+  },
+  LibrarySecond: {
+    memo: "図書館(2階)",
+    accessible: () => true,
+    x: 408,
+    y: 65
   }
 };

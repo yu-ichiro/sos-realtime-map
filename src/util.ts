@@ -12,4 +12,9 @@ export const groupBy = <K, V>(
     }, new Map<K, V[]>())
   );
 
-export const immediate = <T>(value: T) => value;
+export const wrap = <T>(val: T) => () => val;
+export const immediate = <T>(val: T) => wrap(val)();
+
+export type EnumKey<E> = keyof E;
+export type Default<L> = L | "default";
+export type DefaultedKey<E> = Default<EnumKey<E>>;
