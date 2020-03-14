@@ -5,6 +5,7 @@ import {
   VuexModule
 } from "vuex-module-decorators";
 import store from "@/store";
+import { SosEvent } from "@/assets/events";
 
 export enum Seasons {
   Spring,
@@ -137,18 +138,27 @@ function _unwrapMutableSosDate(_sosDate: SosDate): MutableSosDate {
 export interface SosStateInterface {
   date: SosDate;
   sunny: boolean;
+  readonly events: Map<string, boolean>
 }
 
 @Module({ dynamic: true, store, name: "sosDate" })
 class SosStateModule extends VuexModule implements SosStateInterface {
   date: SosDate = new MutableSosDate();
   sunny = true;
+  events: Map<string, boolean> = new Map();
 
   get getState(): SosStateInterface {
     return {
       date: this.date,
-      sunny: this.sunny
+      sunny: this.sunny,
+      events: this.events
     };
+  }
+
+  @Mutation
+  doEvent(event: SosEvent) {
+    if (!event.ready(this.getState)) return;
+    this.events.set(event.name, true);
   }
 
   @Mutation

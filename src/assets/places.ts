@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { stateCondition } from "@/store/sos_state";
 import { Characters } from "@/assets/characters";
+import { MapObject } from "@/util";
 
 export type Vector = [number, number];
 
@@ -24,7 +25,13 @@ export interface Place {
   x: number;
   y: number;
 }
-export const Places: { [key: string]: Place } = {};
+
+export interface Checkpoint {
+  x: number,
+  y: number
+}
+
+export const Places: MapObject<Place> = {};
 Places.Nowhere = {
   memo: "不明",
   accessible: () => false,
@@ -232,3 +239,6 @@ Places.LibrarySecond = {
   x: 408,
   y: 65
 };
+
+// noinspection JSUnusedLocalSymbols
+const Checkpoints: MapObject<string | MapObject<Checkpoint>> = {};

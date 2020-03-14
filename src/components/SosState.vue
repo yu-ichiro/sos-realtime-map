@@ -79,7 +79,8 @@ export default class SosState extends Vue {
 
   localState: SosStateInterface = {
     date: new SosDate(),
-    sunny: true
+    sunny: true,
+    events: new Map<string, boolean>()
   };
 
   get auto(): boolean {
@@ -140,10 +141,7 @@ export default class SosState extends Vue {
   }
 
   get globalState(): SosStateInterface {
-    return {
-      date: sosStateModule.date,
-      sunny: sosStateModule.sunny
-    };
+    return sosStateModule.getState;
   }
 
   get minutesMod10(): number {
