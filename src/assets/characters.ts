@@ -154,10 +154,10 @@ Characters.Cliff = {
     }
   },
   place: booleanSwitch(
-    state => eventDone(Characters.Cliff.events.Work)(state),
+    eventDone(Characters.Cliff.events.Work),
     [
       [
-        true,
+        false,
         hourSwitch([
           [6, wrap(Places.HotelSecond)],
           [9, wrap(Places.Church)],
@@ -165,7 +165,7 @@ Characters.Cliff = {
         ])
       ],
       [
-        false,
+        true,
         booleanSwitch(andCondition(isSunny, notCondition(isWeekday("Sat"))), [
           [
             true,
@@ -251,7 +251,7 @@ Characters.Duke = {
   url: require("@/assets/img/characters/duke.jpg"),
   events: {},
   place: booleanSwitch(
-    state => eventDone(Characters.Cliff.events.Work)(state),
+    eventDone(Characters.Cliff.events.Work),
     [
       [
         false,

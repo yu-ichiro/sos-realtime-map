@@ -176,14 +176,14 @@ Places.WinerySecond = {
 Places.WineryBase = {
   name: "アージュワイナリー(貯蔵庫)",
   accessible: () => true,
-  x: 442,
-  y: 274
+  x: 440,
+  y: 153
 };
 Places.WineryYard = {
   name: "アージュワイナリー(果樹園)",
   accessible: () => true,
-  x: 459,
-  y: 293
+  x: 470,
+  y: 173
 };
 Places.ChickenRanch = {
   name: "にわとりりあ",
