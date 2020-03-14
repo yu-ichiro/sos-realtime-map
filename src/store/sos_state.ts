@@ -138,7 +138,7 @@ function _unwrapMutableSosDate(_sosDate: SosDate): MutableSosDate {
 export interface SosStateInterface {
   date: SosDate;
   sunny: boolean;
-  readonly events: Map<string, boolean>
+  readonly events: Map<string, boolean>;
 }
 
 @Module({ dynamic: true, store, name: "sosDate" })

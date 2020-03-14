@@ -2,7 +2,7 @@
   <l-marker :lat-lng="position">
     <l-popup :options="{ offset: [0, -50] }">
       <h4>{{ character.name }}</h4>
-      <span>{{ place.memo }}</span>
+      <span>{{ place.name }}</span>
     </l-popup>
     <l-icon :icon-anchor="[20, 50]">
       <crop-pointer-pin

@@ -1,7 +1,7 @@
 <template>
   <l-marker :lat-lng="position">
     <l-popup :options="{ offset: [0, -50] }">
-      <h4 class="place name">{{ place.memo }}</h4>
+      <h4 class="place name">{{ place.name }}</h4>
       ここにいるキャラクター:<br />
       <div
         class="character"
@@ -13,7 +13,7 @@
       </div>
     </l-popup>
     <l-icon :icon-anchor="[20, 50]">
-      <crop-pointer-pin :alt="place.memo" text :disabled="!accessible">
+      <crop-pointer-pin :alt="place.name" text :disabled="!accessible">
         {{ characters.length }}
       </crop-pointer-pin>
     </l-icon>

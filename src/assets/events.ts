@@ -9,4 +9,5 @@ export interface SosEvent {
 
 export const eventDone: (
   event: SosEvent
-) => stateDependent<boolean> = event => state => state.events.get(event.name) ?? false;
+) => stateDependent<boolean> = event => state =>
+  state.events.get(event.name) ?? false;

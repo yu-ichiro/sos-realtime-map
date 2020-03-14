@@ -18,4 +18,4 @@ export const immediate = <T>(val: T) => wrap(val)();
 export type EnumKey<E> = keyof E;
 export type Default<L> = L | "default";
 export type DefaultedKey<E> = Default<EnumKey<E>>;
-export type MapObject<T> = {[key: string]: T};
+export type MapObject<T> = { [key: string]: T };

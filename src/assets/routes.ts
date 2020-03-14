@@ -45,7 +45,7 @@ export const move = (route: Route, hourOffset: number, minuteOffset: number) =>
       );
     };
     return {
-      memo: `移動中(${route.from.memo}→${route.to.memo})`,
+      name: `移動中(${route.from.name}→${route.to.name})`,
       accessible: wrap(true),
       ...calculatePosition(progress)
     };
