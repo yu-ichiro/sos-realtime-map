@@ -2,7 +2,7 @@
 import { stateCondition } from "@/store/sos_state";
 import { Characters } from "@/assets/characters";
 
-export type Vector = [number, number]
+export type Vector = [number, number];
 
 export const vec2Pos = (vec: [number, number]) => ({
   x: vec[0],
@@ -102,14 +102,14 @@ export const Places: Record<string, Place> = {
   HotelPrivate: {
     memo: "ダッドの店(奥)",
     accessible: () => false,
-    x: 560,
-    y: 147
+    x: 576,
+    y: 151
   },
   HotelSecond: {
     memo: "ダッドの店(２階)",
     accessible: () => true,
-    x: 560,
-    y: 160
+    x: 536,
+    y: 146
   },
   HouseBasil: {
     memo: "バジルの家",
@@ -158,8 +158,14 @@ export const Places: Record<string, Place> = {
   Winery: {
     memo: "アージュワイナリー",
     accessible: () => true,
+    x: 394,
+    y: 155
+  },
+  WinerySecond: {
+    memo: "アージュワイナリー(2階)",
+    accessible: () => false,
     x: 414,
-    y: 283
+    y: 133
   },
   WineryBase: {
     memo: "アージュワイナリー(貯蔵庫)",

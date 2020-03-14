@@ -23,7 +23,7 @@
         v-else
         :place="place"
         :characters="characters"
-        :key="place.memo"
+        :key="characters.reduce((prev, character) => prev + character.name, '')"
       ></group-marker>
     </template>
   </l-map>
@@ -94,6 +94,6 @@ export default class SosMap extends Vue {
 <style>
 /*noinspection CssUnusedSymbol*/
 .leaflet-marker-icon {
-  transition: transform 1s linear;
+  transition: transform 0.5s linear;
 }
 </style>
