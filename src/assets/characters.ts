@@ -258,29 +258,28 @@ export const Characters: Record<string, Character> = {
       state => eventDone(Characters.Cliff.events.Work)(state),
       [
         [
-          false, 
+          false,
           weekdaySwitch([
             [
               "default",
               hourSwitch([
-                [6,wrap(Places.WinerySecond)],
-                [7,wrap(Places.Winery)],
-                [10,wrap(Places.WineryBase)],
-                [14,wrap(Places.WineryYard)],
-                [17,wrap(Places.Winery)],
-                [19,wrap(Places.Hotel)],
-                [22,wrap(Places.WinerySecond)]
-  
+                [6, wrap(Places.WinerySecond)],
+                [7, wrap(Places.Winery)],
+                [10, wrap(Places.WineryBase)],
+                [14, wrap(Places.WineryYard)],
+                [17, wrap(Places.Winery)],
+                [19, wrap(Places.Hotel)],
+                [22, wrap(Places.WinerySecond)]
               ])
             ],
             [
               "Sat",
               hourSwitch([
-                [6,wrap(Places.WinerySecond)],
-                [7,wrap(Places.Winery)],
-                [13,wrap(Places.Hotel)],
-                [14,wrap(Places.Winery)],
-                [22,wrap(Places.WinerySecond)]
+                [6, wrap(Places.WinerySecond)],
+                [7, wrap(Places.Winery)],
+                [13, wrap(Places.Hotel)],
+                [14, wrap(Places.Winery)],
+                [22, wrap(Places.WinerySecond)]
               ])
             ]
           ])
@@ -291,34 +290,29 @@ export const Characters: Record<string, Character> = {
             [
               "default",
               hourSwitch([
-                [6,wrap(Places.WinerySecond)],
-                [7,wrap(Places.Winery)],
-                [13,wrap(Places.WineryBase)],
-                [15,wrap(Places.WineryYard)],
-                [17,wrap(Places.Winery)],
-                [19,wrap(Places.Hotel)],
-                [22,wrap(Places.WinerySecond)]
+                [6, wrap(Places.WinerySecond)],
+                [7, wrap(Places.Winery)],
+                [13, wrap(Places.WineryBase)],
+                [15, wrap(Places.WineryYard)],
+                [17, wrap(Places.Winery)],
+                [19, wrap(Places.Hotel)],
+                [22, wrap(Places.WinerySecond)]
               ])
             ],
             [
               "Sat",
               hourSwitch([
-              [6,wrap(Places.WinerySecond)],
-              [7,wrap(Places.Winery)],
-              [13,wrap(Places.Hotel)],
-              [16,wrap(Places.Church)],
-              [19,wrap(Places.Winery)],
-              [22,wrap(Places.WinerySecond)]
+                [6, wrap(Places.WinerySecond)],
+                [7, wrap(Places.Winery)],
+                [13, wrap(Places.Hotel)],
+                [16, wrap(Places.Church)],
+                [19, wrap(Places.Winery)],
+                [22, wrap(Places.WinerySecond)]
               ])
-
             ]
           ])
-
-         ]
-        
         ]
-
-
-
+      ]
+    )
   }
 };
